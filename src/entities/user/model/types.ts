@@ -5,18 +5,18 @@ export type User = {
 	avatar: string;
 }
 
-type LoginPayload = {
+export type LoginPayload = {
 	login: string;
 	password: string;
 }
 
-type RegisterPayload = {
+export type RegisterPayload = {
 	username: string;
 	email: string;
 	password: string;
 }
 
-type UpdateProfilePayload = {
+export type UpdateProfilePayload = {
   username?: string
 	email?: string
   avatar?: string

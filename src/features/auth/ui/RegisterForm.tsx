@@ -1,6 +1,5 @@
 'use client'
 
-import { getPasswordStrength } from '../lib/getPasswordStrength'
 import {
 	isStrongPassword,
 	isValidEmail,
@@ -9,11 +8,14 @@ import {
 	NAME_MIN_LENGTH,
 	PASSWORD_MIN_LENGTH
 } from '@/src/entities/user/lib/validation'
+import { useAuth } from '@/src/entities/user/model/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, FormEvent, useState } from 'react'
+import { getPasswordStrength } from '../lib/getPasswordStrength'
 
 export default function RegisterForm() {
+	const { register } = useAuth()
 	const [form, setForm] = useState({
 		username: '',
 		password: '',
@@ -21,38 +23,47 @@ export default function RegisterForm() {
 	})
 	const [error, setError] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
-	const { strengthPercent, strengthLabel, strengthColor } = getPasswordStrength(form.password)
+	const { strengthPercent, strengthLabel, strengthColor } = getPasswordStrength(
+		form.password
+	)
 
 	const router = useRouter()
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target
-		setForm(prev => ({ ...prev, [name]: value }));
-		setError(null);
+		setForm(prev => ({ ...prev, [name]: value }))
+		setError(null)
 	}
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
 		try {
-			if (!isValidName(form.username)) {
+			const username = form.username.trim()
+			const email = form.email
+			const password = form.password
+			if (!isValidName(username)) {
 				setError(
 					`Name must be between ${NAME_MIN_LENGTH} and ${NAME_MAX_LENGTH} characters.`
 				)
 				return
 			}
-			if (!isValidEmail(form.email)) {
+			if (!isValidEmail(email)) {
 				setError('Enter a valid email address.')
 				return
 			}
-			if (!isStrongPassword(form.password)) {
+			if (!isStrongPassword(password)) {
 				setError(
 					`Password must be at least ${PASSWORD_MIN_LENGTH} characters and include at least three of: uppercase, lowercase, number, symbol.`
 				)
 				return
 			}
 
-			router.push('/auth/login')
+			await register({
+				username,
+				email,
+				password
+			})
 		} catch (err) {
 			setError((err as Error).message)
 		} finally {
