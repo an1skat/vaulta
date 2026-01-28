@@ -92,22 +92,24 @@ export default function RegisterForm() {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="flex min-h-screen w-full items-center justify-center px-4 py-12"
+			className="flex min-h-screen w-full items-center justify-center px-4 py-10 sm:px-6 sm:py-12 lg:px-4 lg:py-12"
 		>
-			<div className="relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-(--glass-border) bg-(--glass) shadow-(--shadow) backdrop-blur-[18px] backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(130deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08)_45%,transparent_75%)] before:opacity-80 before:content-[''] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:right-0 after:top-auto after:z-0 after:h-1/2 after:bg-[radial-gradient(320px_circle_at_80%_40%,var(--accent-soft),transparent_70%)] after:opacity-80 after:content-['']">
-				<div className="relative z-10 grid lg:grid-cols-[1.05fr_0.95fr]">
-					<div className="relative min-h-70 bg-(--surface-strong)">
+			<div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-(--glass-border) bg-(--glass) shadow-(--shadow) backdrop-blur-[18px] backdrop-saturate-150 sm:max-w-3xl sm:rounded-3xl lg:max-w-5xl lg:rounded-[28px]">
+				<div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(130deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08)_45%,transparent_75%)] opacity-80" />
+				<div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 bg-[radial-gradient(320px_circle_at_80%_40%,var(--accent-soft),transparent_70%)] opacity-80" />
+				<div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
+					<div className="order-2 relative min-h-55 bg-(--surface-strong) sm:min-h-70 lg:order-1">
 						<img
 							src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1200&q=80"
 							alt="Cats lounging together"
 							className="absolute inset-0 h-full w-full object-cover"
 						/>
 						<div className="absolute inset-0 bg-linear-to-br from-black/35 via-black/10 to-emerald-400/25" />
-						<div className="relative z-10 flex h-full flex-col justify-end gap-3 p-8 text-white lg:p-10">
+						<div className="relative z-10 flex h-full flex-col justify-end gap-3 p-6 text-white sm:p-8 lg:p-10">
 							<span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
 								Vaulta
 							</span>
-							<h2 className="text-3xl font-semibold leading-tight">
+							<h2 className="text-2xl font-semibold leading-tight sm:text-3xl">
 								Create your vault
 							</h2>
 							<p className="max-w-xs text-sm text-white/70">
@@ -115,19 +117,19 @@ export default function RegisterForm() {
 							</p>
 						</div>
 					</div>
-					<div className="bg-(--surface) p-8 lg:border-l lg:border-(--glass-border) lg:p-10">
-						<div className="mb-6">
+					<div className="order-1 bg-(--surface) p-6 sm:p-8 lg:order-2 lg:border-l lg:border-(--glass-border) lg:p-10">
+						<div className="mb-6 sm:mb-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.4em] text-(--muted)">
 								Welcome to
 							</p>
-							<h1 className="mt-2 text-3xl font-semibold text-foreground">
+							<h1 className="mt-2 text-2xl font-semibold text-foreground sm:text-3xl">
 								Vaulta
 							</h1>
-							<p className="mt-2 text-sm text-(--muted)]">
+							<p className="mt-2 text-sm text-(--muted)">
 								Create your account to start securing your vault.
 							</p>
 						</div>
-						<div className="grid gap-5">
+						<div className="grid gap-4 sm:gap-5">
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Name</span>
 								<input
@@ -136,7 +138,8 @@ export default function RegisterForm() {
 									id="name"
 									placeholder="Display name"
 									onChange={handleChange}
-									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									className="w-full rounded-2xl border border-(--border) bg-[color:
+									var(--input-bg)] px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
@@ -147,8 +150,7 @@ export default function RegisterForm() {
 									id="username"
 									placeholder="Username"
 									onChange={handleChange}
-									className="rounded-2xl border border-(--border) bg-[col
-									or:var(--input-bg)] px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
@@ -159,7 +161,7 @@ export default function RegisterForm() {
 									id="email"
 									placeholder="E-mail"
 									onChange={handleChange}
-									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
@@ -170,7 +172,7 @@ export default function RegisterForm() {
 									id="password"
 									placeholder="Password"
 									onChange={handleChange}
-									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 								<div className="mt-2 grid gap-2">
 									<div className="h-2 w-full overflow-hidden rounded-full border border-white/15 bg-white/15">
@@ -191,7 +193,7 @@ export default function RegisterForm() {
 
 							<button
 								type="submit"
-								className="mt-2 w-full rounded-full bg-linear-to-br from-(--accent) to-(--accent-strong) px-4 py-3 text-sm font-semibold text-[#061c12] shadow-[0_18px_40px_-22px_rgba(16,158,86,0.85)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-26px_rgba(16,158,86,0.95)] focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)] disabled:cursor-not-allowed disabled:opacity-70"
+								className="mt-2 w-full rounded-full bg-linear-to-br from-(--accent) to-(--accent-strong) px-4 py-3 text-sm font-semibold text-[#061c12] shadow-[0_18px_40px_-22px_rgba(16,158,86,0.85)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-26px_rgba(16,158,86,0.95)] focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)] disabled:cursor-not-allowed disabled:opacity-70 sm:text-base"
 								disabled={isSubmitting}
 							>
 								Submit
