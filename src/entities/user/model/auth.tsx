@@ -1,7 +1,7 @@
 'use client'
 
 import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import {
 	createContext,
 	useCallback,
@@ -27,32 +27,20 @@ const api = axios.create({
 	withCredentials: true
 })
 
-const router = useRouter()
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null)
 	const [isReady, setIsReady] = useState(false)
+	const router = useRouter()
 
 	const refreshSession = useCallback(async () => {
 		try {
 			const res = await api.post('/api/auth/refresh')
-
-			if (res.status === 401) {
-				router.push('/login')
-				return false
-			}
-
 			const data = res.data as { user?: User }
-			if (data.user) {
-				setUser(data.user)
-			}
 
+			if (data.user) setUser(data.user)
 			return true
 		} catch (err) {
-			console.error(err)
 			setUser(null)
-			setIsReady(false)
-			router.push('/login')
 			return false
 		}
 	}, [])
@@ -83,8 +71,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	useEffect(() => {
 		const restore = async () => {
 			try {
-				const res = await requestJson<{ user: User }>('/api/auth/me', {})
-
+				const res = await requestJson<{ user: User }>('/api/auth/me', {
+					method: 'GET'
+				})
 				setUser(res.user)
 			} catch {
 				setUser(null)

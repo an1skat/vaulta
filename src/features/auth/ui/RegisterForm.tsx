@@ -90,65 +90,125 @@ export default function RegisterForm() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<label htmlFor="name">
-				Name
-				<input
-					type="text"
-					name="name"
-					id="name"
-					placeholder="Display name"
-					onChange={handleChange}
-				/>
-			</label>
-			<label htmlFor="username">
-				Username
-				<input
-					type="text"
-					name="username"
-					id="username"
-					placeholder="Username"
-					onChange={handleChange}
-				/>
-			</label>
-			<label htmlFor="Email">
-				Email
-				<input
-					type="email"
-					name="email"
-					id="email"
-					placeholder="E-mail"
-					onChange={handleChange}
-				/>
-			</label>
-			<label htmlFor="password">
-				Password
-				<input
-					type="password"
-					name="password"
-					id="password"
-					placeholder="Password"
-					onChange={handleChange}
-				/>
-				<div className="space-y-2">
-					<div className="h-2 w-full rounded-full bg-white/10">
-						<div
-							className={`h-2 rounded-full transition-all duration-300 ${strengthColor}`}
-							style={{ width: `${strengthPercent}%` }}
+		<form
+			onSubmit={handleSubmit}
+			className="flex min-h-screen w-full items-center justify-center px-4 py-12"
+		>
+			<div className="relative w-full max-w-5xl overflow-hidden rounded-[28px] border border-(--glass-border) bg-(--glass) shadow-(--shadow) backdrop-blur-[18px] backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-0 before:z-0 before:bg-[linear-gradient(130deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08)_45%,transparent_75%)] before:opacity-80 before:content-[''] after:pointer-events-none after:absolute after:bottom-0 after:left-0 after:right-0 after:top-auto after:z-0 after:h-1/2 after:bg-[radial-gradient(320px_circle_at_80%_40%,var(--accent-soft),transparent_70%)] after:opacity-80 after:content-['']">
+				<div className="relative z-10 grid lg:grid-cols-[1.05fr_0.95fr]">
+					<div className="relative min-h-70 bg-(--surface-strong)">
+						<img
+							src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1200&q=80"
+							alt="Cats lounging together"
+							className="absolute inset-0 h-full w-full object-cover"
 						/>
+						<div className="absolute inset-0 bg-linear-to-br from-black/35 via-black/10 to-emerald-400/25" />
+						<div className="relative z-10 flex h-full flex-col justify-end gap-3 p-8 text-white lg:p-10">
+							<span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
+								Vaulta
+							</span>
+							<h2 className="text-3xl font-semibold leading-tight">
+								Create your vault
+							</h2>
+							<p className="max-w-xs text-sm text-white/70">
+								Private, encrypted, and ready to keep your secrets safe.
+							</p>
+						</div>
 					</div>
-					<p className="text-xs text-white/60">
-						Strength: {strengthLabel}. Use {PASSWORD_MIN_LENGTH}+ chars and at
-						least three of uppercase, lowercase, number, symbol.
-					</p>
-				</div>
-			</label>
-			{error && <p className="text-sm text-red-400">{error}</p>}
+					<div className="bg-(--surface) p-8 lg:border-l lg:border-(--glass-border) lg:p-10">
+						<div className="mb-6">
+							<p className="text-xs font-semibold uppercase tracking-[0.4em] text-(--muted)">
+								Welcome to
+							</p>
+							<h1 className="mt-2 text-3xl font-semibold text-foreground">
+								Vaulta
+							</h1>
+							<p className="mt-2 text-sm text-(--muted)]">
+								Create your account to start securing your vault.
+							</p>
+						</div>
+						<div className="grid gap-5">
+							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
+								<span>Name</span>
+								<input
+									type="text"
+									name="name"
+									id="name"
+									placeholder="Display name"
+									onChange={handleChange}
+									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+								/>
+							</label>
+							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
+								<span>Username</span>
+								<input
+									type="text"
+									name="username"
+									id="username"
+									placeholder="Username"
+									onChange={handleChange}
+									className="rounded-2xl border border-(--border) bg-[col
+									or:var(--input-bg)] px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+								/>
+							</label>
+							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
+								<span>Email</span>
+								<input
+									type="email"
+									name="email"
+									id="email"
+									placeholder="E-mail"
+									onChange={handleChange}
+									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+								/>
+							</label>
+							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
+								<span>Password</span>
+								<input
+									type="password"
+									name="password"
+									id="password"
+									placeholder="Password"
+									onChange={handleChange}
+									className="rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+								/>
+								<div className="mt-2 grid gap-2">
+									<div className="h-2 w-full overflow-hidden rounded-full border border-white/15 bg-white/15">
+										<div
+											className={`h-full rounded-full transition-all duration-300 ${strengthColor}`}
+											style={{ width: `${strengthPercent}%` }}
+										/>
+									</div>
+									<p className="text-xs text-(--muted)">
+										Strength: {strengthLabel}. Use {PASSWORD_MIN_LENGTH}+ chars
+										and at least three of uppercase, lowercase, number, symbol.
+									</p>
+								</div>
+							</label>
+							{error && (
+								<p className="text-sm text-(--error)">{error}</p>
+							)}
 
-			<button type="submit">Submit</button>
-			<p>
-				Already have an account? <Link href="/auth/login">Login</Link>
-			</p>
+							<button
+								type="submit"
+								className="mt-2 w-full rounded-full bg-linear-to-br from-(--accent) to-(--accent-strong) px-4 py-3 text-sm font-semibold text-[#061c12] shadow-[0_18px_40px_-22px_rgba(16,158,86,0.85)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-26px_rgba(16,158,86,0.95)] focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)] disabled:cursor-not-allowed disabled:opacity-70"
+								disabled={isSubmitting}
+							>
+								Submit
+							</button>
+							<p className="text-center text-sm text-(--muted)">
+								Already have an account?{' '}
+								<Link
+									href="/auth/login"
+									className="font-semibold text-(--accent-strong) underline-offset-4 transition hover:underline"
+								>
+									Login
+								</Link>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</form>
 	)
 }

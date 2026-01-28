@@ -1,10 +1,14 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Home() {
-  const router = useRouter();
+  const router = useRouter()
 
-  router.push("/auth/register");
-  return null;
+  useEffect(() => {
+    router.replace('/auth/register')
+  }, [router])
+
+  return null
 }
