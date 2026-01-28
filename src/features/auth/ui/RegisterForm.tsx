@@ -16,7 +16,7 @@ import { ChangeEvent, FormEvent, useState } from 'react'
 import { getPasswordStrength } from '../lib/getPasswordStrength'
 
 export default function RegisterForm() {
-	const { register } = useAuth()
+	const { register, login } = useAuth()
 	const [form, setForm] = useState({
 		name: '',
 		username: '',
@@ -39,6 +39,7 @@ export default function RegisterForm() {
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setIsSubmitting(true)
 
 		try {
 			const username = form.username.trim()
@@ -74,6 +75,13 @@ export default function RegisterForm() {
 				email,
 				password
 			})
+
+			await login({
+				login: username,
+				password
+			})
+
+			// router.push('/')
 		} catch (err) {
 			setError((err as Error).message)
 		} finally {
