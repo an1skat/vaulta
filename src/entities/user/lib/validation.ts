@@ -6,6 +6,9 @@ export const isValidName = (name: string) => {
 	const trimmed = name.trim()
 	return trimmed.length >= NAME_MIN_LENGTH && trimmed.length <= NAME_MAX_LENGTH
 }
+export const isValidUsername = (username: string) => {
+	return username.length <= NAME_MAX_LENGTH
+}
 
 export const isValidEmail = (email: string) => {
 	const trimmed = email.trim()

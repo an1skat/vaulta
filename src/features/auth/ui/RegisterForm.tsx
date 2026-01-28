@@ -4,6 +4,7 @@ import {
 	isStrongPassword,
 	isValidEmail,
 	isValidName,
+	isValidUsername,
 	NAME_MAX_LENGTH,
 	NAME_MIN_LENGTH,
 	PASSWORD_MIN_LENGTH
@@ -17,6 +18,7 @@ import { getPasswordStrength } from '../lib/getPasswordStrength'
 export default function RegisterForm() {
 	const { register } = useAuth()
 	const [form, setForm] = useState({
+		name: '',
 		username: '',
 		password: '',
 		email: ''
@@ -42,9 +44,16 @@ export default function RegisterForm() {
 			const username = form.username.trim()
 			const email = form.email
 			const password = form.password
-			if (!isValidName(username)) {
+			const name = form.name
+			if (!isValidName(name)) {
 				setError(
 					`Name must be between ${NAME_MIN_LENGTH} and ${NAME_MAX_LENGTH} characters.`
+				)
+				return
+			}
+			if (!isValidUsername(username)) {
+				setError(
+					`Username must be between less than ${NAME_MAX_LENGTH} characters.`
 				)
 				return
 			}
@@ -60,6 +69,7 @@ export default function RegisterForm() {
 			}
 
 			await register({
+				name,
 				username,
 				email,
 				password
@@ -73,6 +83,16 @@ export default function RegisterForm() {
 
 	return (
 		<form onSubmit={handleSubmit}>
+			<label htmlFor="name">
+				Name
+				<input
+					type="text"
+					name="name"
+					id="name"
+					placeholder="Display name"
+					onChange={handleChange}
+				/>
+			</label>
 			<label htmlFor="username">
 				Username
 				<input

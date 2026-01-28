@@ -2,8 +2,13 @@ import { prisma } from '@/src/shared/server/prisma'
 import { randomBytes, scrypt, timingSafeEqual } from 'crypto'
 import 'server-only'
 import { promisify } from 'util'
-import { isStrongPassword, isValidEmail, isValidName } from '../lib/validation'
-import { RegisterPayload } from '../model/types'
+import {
+	isStrongPassword,
+	isValidEmail,
+	isValidName,
+	isValidUsername
+} from '../lib/validation'
+import { LoginPayload, RegisterPayload, User } from '../model/types'
 
 const scryptAsync = promisify(scrypt)
 const hashPassword = async (password: string) => {
@@ -25,21 +30,34 @@ const verifyPassword = async (password: string, stored: string) => {
 	return timingSafeEqual(storedBuf, derived)
 }
 
-export const findUserById = async (id: string) => {
-	return prisma.user.findUnique({ where: { id } })
+export const getUserById = async (id: string) => {
+	return prisma.user.findUnique({
+		where: { id },
+		select: {
+			id: true,
+			name: true,
+			username: true,
+			email: true
+		}
+	})
 }
 
 export const createUser = async (payload: RegisterPayload) => {
-	const username = payload.username?.trim()
-	const email = payload.email?.trim()
+	const name = payload.name
+	const username = payload.username?.trim().toLowerCase()
+	const email = payload.email?.trim().toLowerCase()
 	const password = payload.password?.trim()
 
-	if (!username || !email || !password) {
+	if (!name || !username || !email || !password) {
 		throw new Error('Username, email and password are required')
 	}
 
-	if (!isValidName(username)) {
+	if (!isValidName(name)) {
 		throw new Error('Name must be between 3 and 20 characters.')
+	}
+
+	if (!isValidUsername(username)) {
+		throw new Error('Username must be less than 20 characters.')
 	}
 
 	if (!isValidEmail(email)) {
@@ -63,24 +81,44 @@ export const createUser = async (payload: RegisterPayload) => {
 
 	const hashedPassword = await hashPassword(password)
 
-	const user = {
-		username,
-		email,
-		password: hashedPassword
-	}
-
 	const created = await prisma.user.create({
 		data: {
+			name,
 			username,
 			email,
 			password: hashedPassword
 		},
 		select: {
 			id: true,
+			name: true,
 			username: true,
 			email: true
 		}
 	})
 
 	return created
+}
+
+export const loginUser = async (payload: LoginPayload): Promise<User> => {
+	const login = payload.login?.trim().toLowerCase()
+	const payloadPassword = payload.password?.trim()
+
+	if (!login || !payloadPassword)
+		throw new Error('Login and password are required.')
+
+	const user = await prisma.user.findFirst({
+		where: {
+			OR: [{ username: login }, { email: login }]
+		}
+	})
+
+	if (!user) throw new Error('Invalid login or password.')
+
+	const matches = await verifyPassword(payloadPassword, user.password)
+
+	if (!matches) throw new Error('Invalid login or password.')
+
+	const { password, ...data } = user
+
+	return { ...data }
 }
