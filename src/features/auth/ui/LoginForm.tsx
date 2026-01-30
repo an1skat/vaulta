@@ -44,7 +44,7 @@ export default function Login() {
 								Vaulta
 							</h1>
 							<p className="mt-2 text-sm text-(--muted)">
-								Sign in to your vault and continue where you left off.
+								Your space. Your collections.
 							</p>
 						</div>
 						<div className="grid gap-4 sm:gap-5">
@@ -68,9 +68,7 @@ export default function Login() {
 									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
-							{error && (
-								<p className="text-sm text-(--error)">{error}</p>
-							)}
+							{error && <p className="text-sm text-(--error)">{error}</p>}
 
 							<button
 								type="submit"
@@ -101,12 +99,6 @@ export default function Login() {
 							<span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
 								Vaulta
 							</span>
-							<h2 className="text-2xl font-semibold leading-tight sm:text-3xl">
-								Welcome back
-							</h2>
-							<p className="max-w-xs text-sm text-white/70">
-								Your vault is waiting. Let&apos;s unlock it.
-							</p>
 						</div>
 					</div>
 				</div>

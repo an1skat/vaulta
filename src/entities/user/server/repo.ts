@@ -56,7 +56,7 @@ export const createUser = async (payload: RegisterPayload) => {
 		throw new Error('Name must be between 3 and 20 characters.')
 	}
 
-	if (!isValidUsername(username)) {
+	if (!isValidUsername(username)) { 
 		throw new Error('Username must be less than 20 characters.')
 	}
 

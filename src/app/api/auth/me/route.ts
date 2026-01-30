@@ -1,6 +1,7 @@
 import { clearAuthCookies } from '@/src/entities/user/server/auth-cookies'
 import { getUserById } from '@/src/entities/user/server/repo'
 import { getSessionsByAccessToken } from '@/src/entities/user/server/session'
+import { getSession } from '@/src/shared/lib/getSession'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
@@ -8,17 +9,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-	const cookieStore = await cookies()
-	const accessToken = cookieStore.get('access-token')?.value
-
-	if (!accessToken) {
-		return NextResponse.json(
-			{ error: 'Missing access token.' },
-			{ status: 401 }
-		)
-	}
-
-	const session = await getSessionsByAccessToken(accessToken)
+	const session = await getSession();
 	if (!session) {
 		return NextResponse.json({ error: 'Session expired.' }, { status: 401 })
 	}

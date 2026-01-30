@@ -20,7 +20,7 @@ export async function POST() {
 		await revokeSessionByRefreshToken(refreshToken)
 	}
 
-	const response = NextResponse.json({ pk: true })
+	const response = NextResponse.json({ ok: true })
 	clearAuthCookies(response)
 	return response
 }

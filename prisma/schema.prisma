@@ -22,6 +22,8 @@ model User {
   createdAt DateTime  @default(now())
 
   sessions  Session[]
+  folders   Folder[]
+  tags      Tag[]
 
   @@map("users")
 }
@@ -41,8 +43,72 @@ model Session {
 
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-  @@index([refreshExpiresAt])
+  @@index([userId, refreshExpiresAt])
   @@map("sessions")
 }
 
+model Folder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId   String   @map("ownerId") @db.ObjectId
+  title     String
+  details   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  items     Item[]
+
+  @@index([ownerId, createdAt])
+  @@unique([ownerId, title])
+  @@map("folders")
+}
+
+
+
+model Item {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderId  String   @map("folderId") @db.ObjectId
+  ownerId   String   @map("ownerId") @db.ObjectId
+  title     String
+  details   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  tags      ItemTag[]
+
+  @@index([folderId, createdAt])
+  @@unique([folderId, title])
+  @@map("items")
+}
+
+model Tag {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId   String   @map("ownerId") @db.ObjectId
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items     ItemTag[]
+
+  @@index([ownerId])
+  @@unique([ownerId, name])
+  @@map("tags")
+}
+
+model ItemTag {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  itemId String @map("itemId") @db.ObjectId
+  tagId  String @map("tagId") @db.ObjectId
+
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, tagId])
+  @@index([tagId])
+  @@index([itemId])
+  @@map("item_tags")
+}

@@ -1,15 +1,7 @@
 'use client'
 
-import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { useRouter } from 'next/navigation'
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react'
+import api from '@/src/shared/api'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
 	AuthContextValue,
 	LoginPayload,
@@ -20,61 +12,15 @@ import {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-const api = axios.create({
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	withCredentials: true
-})
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState<User | null>(null)
 	const [isReady, setIsReady] = useState(false)
-	const router = useRouter()
-
-	const refreshSession = useCallback(async () => {
-		try {
-			const res = await api.post('/api/auth/refresh')
-			const data = res.data as { user?: User }
-
-			if (data.user) setUser(data.user)
-			return true
-		} catch (err) {
-			setUser(null)
-			return false
-		}
-	}, [])
-
-	const requestJson = async <T,>(
-		url: string,
-		options: AxiosRequestConfig,
-		allowRefresh = true
-	) => {
-		try {
-			const res = await api.request<T>({
-				url,
-				...options
-			})
-
-			return res.data
-		} catch (err) {
-			if ((err as AxiosError).response?.status == 401 && allowRefresh) {
-				const refreshed = await refreshSession()
-				if (refreshed) {
-					return requestJson<T>(url, options, false)
-				}
-			}
-			throw err
-		}
-	}
 
 	useEffect(() => {
 		const restore = async () => {
 			try {
-				const res = await requestJson<{ user: User }>('/api/auth/me', {
-					method: 'GET'
-				})
-				setUser(res.user)
+				const res = await api.get<{ user: User }>('/api/auth/me')
+				setUser(res.data.user)
 			} catch {
 				setUser(null)
 			} finally {
@@ -86,27 +32,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const register = async (payload: RegisterPayload) => {
-		const data = await requestJson<{ user: User }>(
-			'/api/auth/register',
-			{
-				method: 'POST',
-				data: payload
-			},
-			false
-		)
-		setUser(data.user)
+		const res = await api.post<{ user: User }>('/api/auth/register', {
+			data: payload
+		})
+		setUser(res.data.user)
 	}
 
 	const login = async (payload: LoginPayload) => {
-		const data = await requestJson<{ user: User }>(
-			'/api/auth/login',
-			{
-				method: 'POST',
-				data: payload
-			},
-			false
-		)
-		setUser(data.user)
+		const res = await api.post<{ user: User }>('/api/auth/login', {
+			data: payload
+		})
+		setUser(res.data.user)
 	}
 
 	const logout = async () =>
@@ -115,12 +51,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const updateProfile = async (payload: UpdateProfilePayload) => {
 		if (!user) throw new Error('Not authenticated.')
 
-		const data = await requestJson<{ user: User }>(`/api/users/${user.id}`, {
-			method: 'PUT',
+		const res = await api.put<{ user: User }>(`/api/users/${user.id}`, {
 			data: payload
 		})
 
-		setUser(data.user)
+		setUser(res.data.user)
 	}
 
 	const value = useMemo(

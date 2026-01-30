@@ -109,12 +109,6 @@ export default function RegisterForm() {
 							<span className="text-xs font-semibold uppercase tracking-[0.4em] text-white/70">
 								Vaulta
 							</span>
-							<h2 className="text-2xl font-semibold leading-tight sm:text-3xl">
-								Create your vault
-							</h2>
-							<p className="max-w-xs text-sm text-white/70">
-								Private, encrypted, and ready to keep your secrets safe.
-							</p>
 						</div>
 					</div>
 					<div className="order-1 bg-(--surface) p-6 sm:p-8 lg:order-2 lg:border-l lg:border-(--glass-border) lg:p-10">
@@ -126,7 +120,7 @@ export default function RegisterForm() {
 								Vaulta
 							</h1>
 							<p className="mt-2 text-sm text-(--muted)">
-								Create your account to start securing your vault.
+								Organize your world, your way.
 							</p>
 						</div>
 						<div className="grid gap-4 sm:gap-5">
@@ -144,15 +138,24 @@ export default function RegisterForm() {
 							</label>
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Username</span>
-								<input
-									type="text"
-									name="username"
-									id="username"
-									placeholder="Username"
-									onChange={handleChange}
-									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
-								/>
+
+								<div className="relative">
+									<span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-(--muted)">
+										@
+									</span>
+
+									<input
+										type="text"
+										name="username"
+										id="username"
+										placeholder="username"
+										value={form.username}
+										onChange={handleChange}
+										className="w-full rounded-2xl border border-(--border) bg-(--input-bg) pl-7 pr-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									/>
+								</div>
 							</label>
+
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Email</span>
 								<input
@@ -187,9 +190,7 @@ export default function RegisterForm() {
 									</p>
 								</div>
 							</label>
-							{error && (
-								<p className="text-sm text-(--error)">{error}</p>
-							)}
+							{error && <p className="text-sm text-(--error)">{error}</p>}
 
 							<button
 								type="submit"

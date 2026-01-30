@@ -9,12 +9,7 @@ export const dynamic = 'force-dynamic'
 export async function POST(request: Request) {
 	try {
 		const payload = await request.json()
-		const user = await createUser({
-			name: payload.name,
-			username: payload.username,
-			email: payload.email,
-			password: payload.password
-		})
+		const user = await createUser(payload)
 		const session = await createSession(user.id, {
 			userAgent: request.headers.get('user-agent') || undefined,
 			ip: request.headers.get('x-forwarded-for') || undefined
