@@ -37,7 +37,8 @@ export const getUserById = async (id: string) => {
 			id: true,
 			name: true,
 			username: true,
-			email: true
+			email: true,
+			avatarKey: true
 		}
 	})
 }
@@ -92,7 +93,8 @@ export const createUser = async (payload: RegisterPayload) => {
 			id: true,
 			name: true,
 			username: true,
-			email: true
+			email: true,
+			avatarKey: true
 		}
 	})
 

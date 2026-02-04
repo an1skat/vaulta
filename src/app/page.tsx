@@ -2,6 +2,7 @@ import { getSession } from '@/src/shared/lib/getSession'
 import FoldersSection from '@/src/widgets/folders-section'
 import Link from 'next/link'
 import { FiPlus, FiUser } from 'react-icons/fi'
+import { getUserById } from '../entities/user/server/repo'
 
 type HomeProps = {
 	searchParams?: Promise<Record<string, string | string[] | undefined>>
@@ -12,24 +13,32 @@ export default async function Home({ searchParams }: HomeProps) {
 	const query = typeof params?.q === 'string' ? params.q : ''
 	const session = await getSession()
 
+	const me = session?.userId ? await getUserById(session.userId) : null
+
 	return (
 		<main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
 			<header className="flex items-center justify-between">
-				{/* Brand name in the top-left corner. */}
 				<Link
 					href="/"
 					className="text-2xl font-semibold tracking-[0.2em] text-foreground"
 				>
 					Vaulta
 				</Link>
-				{/* Profile shortcut in the top-right corner (current user). */}
 				{session?.userId && (
 					<Link
 						href={`/u/${session.userId}`}
 						aria-label="Open your profile"
 						className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-(--glass-border) bg-(--surface) text-(--muted-strong) shadow-(--shadow-soft) transition duration-200 hover:-translate-y-0.5 hover:border-(--accent) hover:text-(--accent-strong) focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)]"
 					>
-						<FiUser className="text-base" />
+						{me?.avatarKey ? (
+							<img
+								src={`/api/files/${encodeURIComponent(me.avatarKey)}`}
+								alt="Your avatar"
+								className="h-full w-full object-cover rounded-full"
+							/>
+						) : (
+							<FiUser className="text-base" />
+						)}
 					</Link>
 				)}
 			</header>
@@ -51,7 +60,6 @@ export default async function Home({ searchParams }: HomeProps) {
 						</p>
 					</div>
 					<div className="flex flex-col items-start gap-3 sm:items-end">
-						{/* CTA placeholder; update the href when the create flow is ready. */}
 						<Link
 							href="/auth/register"
 							className="inline-flex items-center gap-2 rounded-full bg-linear-to-br from-(--accent) to-(--accent-strong) px-5 py-3 text-sm font-semibold text-[#061c12] shadow-[0_18px_40px_-22px_rgba(16,158,86,0.85)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-26px_rgba(16,158,86,0.95)] focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)]"

@@ -2,9 +2,6 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 
 const api = axios.create({
 	baseURL: 'http://localhost:3000',
-	headers: {
-		'Content-Type': 'application/json'
-	},
 	withCredentials: true
 })
 
@@ -29,6 +26,20 @@ async function ensureRefresh() {
 	await refreshPromise
 }
 
+api.interceptors.request.use(config => {
+	const isFormData =
+		typeof FormData !== 'undefined' && config.data instanceof FormData
+
+	if (isFormData) {
+		if (config.headers) delete (config.headers as any)['Content-Type']
+	} else {
+		config.headers = config.headers || {}
+		;(config.headers as any)['Content-Type'] = 'application/json'
+	}
+
+	return config
+})
+
 api.interceptors.response.use(
 	response => response,
 	async (error: AxiosError) => {
@@ -49,11 +60,7 @@ api.interceptors.response.use(
 
 		config._retry = true
 
-		try {
-			await ensureRefresh()
-		} catch (error) {
-			throw error
-		}
+		await ensureRefresh()
 
 		return axios.request(config)
 	}

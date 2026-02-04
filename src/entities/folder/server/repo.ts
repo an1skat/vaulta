@@ -15,26 +15,26 @@ export const getFolderById = async (id: string) => {
 	return prisma.folder.findUnique({ where: { id } })
 }
 
-export const getAllUserFolders = async (userId: string) => {
-  return prisma.folder.findMany({
-    where: { ownerId: userId },
-    orderBy: { updatedAt: 'desc' },
-    select: {
-      id: true,
-      ownerId: true,
-      title: true,
-      titleLower: true,
-      details: true,
-      createdAt: true,
-      updatedAt: true,
-      isPublic: true,
-      owner: {
-        select: { username: true }
-      }
-    }
-  })
+export const getAllUserFolders = async (userId: string | null) => {
+	if (!userId) return []
+	return prisma.folder.findMany({
+		where: { ownerId: userId },
+		orderBy: { updatedAt: 'desc' },
+		select: {
+			id: true,
+			ownerId: true,
+			title: true,
+			titleLower: true,
+			details: true,
+			createdAt: true,
+			updatedAt: true,
+			isPublic: true,
+			owner: {
+				select: { username: true }
+			}
+		}
+	})
 }
-
 
 export const createFolder = async (payload: FolderPayload, ownerId: string) => {
 	const title = norm(payload.title || '')

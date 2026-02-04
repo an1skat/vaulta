@@ -20,7 +20,7 @@ export default async function FoldersSection({
 	const folders = query
 		? await findFolders(query, viewerId)
 		: viewerId
-			? await getAllUserFolders(viewerId)
+			? await getAllUserFolders(viewerId) 
 			: []
 	return (
 		<section className="relative overflow-hidden rounded-3xl border border-(--glass-border) bg-(--glass) p-6 shadow-(--shadow) backdrop-blur-[18px] backdrop-saturate-150 sm:p-8">

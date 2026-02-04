@@ -10,7 +10,7 @@ export const getFolderById = async (id: string) =>
 	await api.get(`/api/folders/${id}`)
 
 export const createFolder = async (payload: FolderPayload) => {
-	const res = await api.post('/api/folders/create', payload)
+	const res = await api.post('/api/folders', payload)
 	return res.data
 }
 

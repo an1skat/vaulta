@@ -8,13 +8,24 @@ type FolderListItem = Folder & {
 type FolderListProps = {
 	folders: FolderListItem[]
 	query?: string
+	profile?: boolean
 }
 
-export function FolderList({ folders, query = '' }: FolderListProps) {
+export function FolderList({
+	folders,
+	query = '',
+	profile = false
+}: FolderListProps) {
 	return (
 		<div className="grid gap-4">
 			<div className="flex flex-wrap items-center justify-between gap-2">
-				<h3 className="text-lg font-semibold text-foreground">Collections</h3>
+				{profile ? (
+					<h3 className="text-lg font-semibold text-foreground">
+						My Collections
+					</h3>
+				) : (
+					<h3 className="text-lg font-semibold text-foreground">Collections</h3>
+				)}
 				{query && (
 					<span className="text-xs font-semibold text-(--muted)">
 						&quot;{query}&quot; - {folders.length} result

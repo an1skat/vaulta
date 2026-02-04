@@ -12,7 +12,7 @@ import {
 import { useAuth } from '@/src/entities/user/model/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
 import { getPasswordStrength } from '../lib/getPasswordStrength'
 
 export default function RegisterForm() {
@@ -23,6 +23,7 @@ export default function RegisterForm() {
 		password: '',
 		email: ''
 	})
+	const [avatarFile, setAvatarFile] = useState<File | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const { strengthPercent, strengthLabel, strengthColor } = getPasswordStrength(
@@ -31,10 +32,41 @@ export default function RegisterForm() {
 
 	const router = useRouter()
 
+	const avatarPreview = useMemo(() => {
+		if (!avatarFile) return null
+		return URL.createObjectURL(avatarFile)
+	}, [avatarFile])
+
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target
 		setForm(prev => ({ ...prev, [name]: value }))
 		setError(null)
+	}
+
+	const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0] ?? null
+		setError(null)
+		if (!file) {
+			setAvatarFile(null)
+			return
+		}
+		if (!file.type.startsWith('image/')) {
+			setError('Avatar must be an image file.')
+			e.target.value = ''
+			return
+		}
+		if (file.size > 5 * 1024 * 1024) {
+			setError('Avatar is too large. Max 5MB.')
+			e.target.value = ''
+			return
+		}
+		setAvatarFile(file)
+	}
+
+	const clearAvatar = () => {
+		setAvatarFile(null)
+		const input = document.getElementById('avatar') as HTMLInputElement | null
+		if (input) input.value = ''
 	}
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -43,9 +75,10 @@ export default function RegisterForm() {
 
 		try {
 			const username = form.username.trim()
-			const email = form.email
+			const email = form.email.trim()
 			const password = form.password
-			const name = form.name
+			const name = form.name.trim()
+
 			if (!isValidName(name)) {
 				setError(
 					`Name must be between ${NAME_MIN_LENGTH} and ${NAME_MAX_LENGTH} characters.`
@@ -53,9 +86,7 @@ export default function RegisterForm() {
 				return
 			}
 			if (!isValidUsername(username)) {
-				setError(
-					`Username must be between less than ${NAME_MAX_LENGTH} characters.`
-				)
+				setError(`Username must be less than ${NAME_MAX_LENGTH} characters.`)
 				return
 			}
 			if (!isValidEmail(email)) {
@@ -73,7 +104,8 @@ export default function RegisterForm() {
 				name,
 				username,
 				email,
-				password
+				password,
+				avatar: avatarFile
 			})
 
 			await login({
@@ -111,6 +143,7 @@ export default function RegisterForm() {
 							</span>
 						</div>
 					</div>
+
 					<div className="order-1 bg-(--surface) p-6 sm:p-8 lg:order-2 lg:border-l lg:border-(--glass-border) lg:p-10">
 						<div className="mb-6 sm:mb-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.4em] text-(--muted)">
@@ -123,7 +156,58 @@ export default function RegisterForm() {
 								Organize your world, your way.
 							</p>
 						</div>
+
 						<div className="grid gap-4 sm:gap-5">
+							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
+								<span>Avatar</span>
+
+								<div className="flex items-center gap-4">
+									<div className="relative h-14 w-14 overflow-hidden rounded-2xl border border-(--border) bg-(--input-bg) shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]">
+										{avatarPreview ? (
+											<img
+												src={avatarPreview}
+												alt="Avatar preview"
+												className="h-full w-full object-cover"
+											/>
+										) : (
+											<div className="flex h-full w-full items-center justify-center text-xs text-(--muted)">
+												No
+											</div>
+										)}
+									</div>
+
+									<div className="flex flex-wrap items-center gap-2">
+										<input
+											id="avatar"
+											name="avatar"
+											type="file"
+											accept="image/*"
+											onChange={handleAvatarChange}
+											className="hidden"
+										/>
+										<label
+											htmlFor="avatar"
+											className="cursor-pointer rounded-full border border-(--border) bg-(--input-bg) px-4 py-2 text-sm font-semibold text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 hover:-translate-y-0.5 focus:outline-none"
+										>
+											Choose file
+										</label>
+
+										<button
+											type="button"
+											onClick={clearAvatar}
+											disabled={!avatarFile}
+											className="rounded-full border border-(--border) bg-transparent px-4 py-2 text-sm font-semibold text-(--muted-strong) transition duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+										>
+											Clear
+										</button>
+
+										<p className="text-xs text-(--muted)">
+											PNG/JPG/WebP, up to 5MB
+										</p>
+									</div>
+								</div>
+							</label>
+
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Name</span>
 								<input
@@ -132,10 +216,10 @@ export default function RegisterForm() {
 									id="name"
 									placeholder="Display name"
 									onChange={handleChange}
-									className="w-full rounded-2xl border border-(--border) bg-[color:
-									var(--input-bg)] px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
+
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Username</span>
 
@@ -167,6 +251,7 @@ export default function RegisterForm() {
 									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
+
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Password</span>
 								<input
@@ -190,6 +275,7 @@ export default function RegisterForm() {
 									</p>
 								</div>
 							</label>
+
 							{error && <p className="text-sm text-(--error)">{error}</p>}
 
 							<button
@@ -199,6 +285,7 @@ export default function RegisterForm() {
 							>
 								Submit
 							</button>
+
 							<p className="text-center text-sm text-(--muted)">
 								Already have an account?{' '}
 								<Link
