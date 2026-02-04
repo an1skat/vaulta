@@ -32,16 +32,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	}, [])
 
 	const register = async (payload: RegisterPayload) => {
-		const res = await api.post<{ user: User }>('/api/auth/register', {
-			data: payload
-		})
+		const res = await api.post<{ user: User }>('/api/auth/register', payload)
 		setUser(res.data.user)
 	}
 
 	const login = async (payload: LoginPayload) => {
-		const res = await api.post<{ user: User }>('/api/auth/login', {
-			data: payload
-		})
+		const res = await api.post<{ user: User }>('/api/auth/login', payload)
 		setUser(res.data.user)
 	}
 

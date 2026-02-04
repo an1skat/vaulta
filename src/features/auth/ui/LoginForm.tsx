@@ -1,8 +1,9 @@
 'use client'
 
+import { useAuth } from '@/src/entities/user/model/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 
 export default function Login() {
 	const [form, setForm] = useState({
@@ -12,12 +13,24 @@ export default function Login() {
 	const [error, setError] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
+	const { login } = useAuth()
 	const router = useRouter()
+
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target
+		setForm(prev => ({ ...prev, [name]: value }))
+		setError(null)
+	}
 
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setIsSubmitting(true)
 
 		try {
+			await login({
+				login: form.login,
+				password: form.password
+			})
 			router.push('/')
 		} catch (err) {
 			setError((err as Error).message)
@@ -55,6 +68,8 @@ export default function Login() {
 									name="login"
 									id="login"
 									placeholder="Username or Email"
+									value={form.login}
+									onChange={handleChange}
 									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>
@@ -65,6 +80,8 @@ export default function Login() {
 									name="password"
 									id="password"
 									placeholder="Password"
+									value={form.password}
+									onChange={handleChange}
 									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
 								/>
 							</label>

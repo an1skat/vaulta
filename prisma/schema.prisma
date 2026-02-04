@@ -48,38 +48,41 @@ model Session {
 }
 
 model Folder {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId   String   @map("ownerId") @db.ObjectId
-  title     String
-  details   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId    String   @map("ownerId") @db.ObjectId
+  title      String   
+  titleLower String
+  details    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isPublic   Boolean  @default(true)
  
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   items     Item[]
 
   @@index([ownerId, createdAt])
-  @@unique([ownerId, title])
+  @@unique([ownerId, titleLower])
   @@map("folders")
 }
 
 
 
 model Item {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  folderId  String   @map("folderId") @db.ObjectId
-  ownerId   String   @map("ownerId") @db.ObjectId
-  title     String
-  details   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  folderId   String   @map("folderId") @db.ObjectId
+  ownerId    String   @map("ownerId") @db.ObjectId
+  title      String
+  titleLower String
+  details    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
   tags      ItemTag[]
 
   @@index([folderId, createdAt])
-  @@unique([folderId, title])
+  @@unique([folderId, titleLower])
   @@map("items")
 }
 

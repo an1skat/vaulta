@@ -1,12 +1,15 @@
 import { deleteFolder, getFolderById } from '@/src/entities/folder/server/repo'
 import { getSession } from '@/src/shared/lib/getSession'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export async function DELETE({ params }: { params: { id: string } }) {
-	const folderId = params.id
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const { id: folderId } = await params
 
 	const folder = await getFolderById(folderId)
 	if (!folder) return NextResponse.json({ error: 'Not found' }, { status: 404 })

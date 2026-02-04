@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 export const getSession = async () => {
 	const cookieStore = await cookies()
 
-	const accessToken = cookieStore.get('access-token')?.value
+	const accessToken = cookieStore.get('access_token')?.value
 	if (!accessToken) return null
 
 	const session = await getSessionsByAccessToken(accessToken)

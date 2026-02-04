@@ -11,8 +11,8 @@ export const dynamic = 'force-dynamic'
 
 export async function POST() {
 	const cookieStore = await cookies()
-	const accessToken = cookieStore.get('access-token')?.value
-	const refreshToken = cookieStore.get('refresh-token')?.value
+	const accessToken = cookieStore.get('access_token')?.value
+	const refreshToken = cookieStore.get('refresh_token')?.value
 
 	if (accessToken) {
 		await revokeSessionByAccessToken(accessToken)

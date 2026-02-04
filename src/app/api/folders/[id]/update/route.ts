@@ -7,10 +7,10 @@ export const dynamic = 'force-dynamic'
 
 export async function PUT(
 	request: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	const payload = await request.json()
-	const folderId = params.id
+	const { id: folderId } = await params
 
 	const folder = await getFolderById(folderId)
 	if (!folder) return NextResponse.json({ error: 'Not found' }, { status: 404 })

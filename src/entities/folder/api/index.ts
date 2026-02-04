@@ -23,3 +23,10 @@ export const deleteFolder = async (id: string) => {
 	const res = await api.delete(`/api/folders/${id}/delete`)
 	return res.data
 }
+
+export const findFolders = async (query: string) => {
+	const res = await api.get(
+		`/api/folders/search?query=${encodeURIComponent(query)}`
+	)
+	return res.data
+}

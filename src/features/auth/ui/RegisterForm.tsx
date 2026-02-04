@@ -81,7 +81,7 @@ export default function RegisterForm() {
 				password
 			})
 
-			// router.push('/')
+			router.push('/')
 		} catch (err) {
 			setError((err as Error).message)
 		} finally {
