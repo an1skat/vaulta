@@ -20,9 +20,10 @@ export type RegisterPayload = {
 }
 
 export type UpdateProfilePayload = {
+	name?: string
 	username?: string
 	email?: string
-	avatar?: string
+	avatar?: File | null
 	password?: string
 }
 

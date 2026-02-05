@@ -15,12 +15,12 @@ export const createFolder = async (payload: FolderPayload) => {
 }
 
 export const updateFolder = async (payload: FolderPayload, id: string) => {
-	const res = await api.put(`/api/folders/${id}/update`, payload)
+	const res = await api.put(`/api/folders/${id}`, payload)
 	return res.data
 }
 
 export const deleteFolder = async (id: string) => {
-	const res = await api.delete(`/api/folders/${id}/delete`)
+	const res = await api.delete(`/api/folders/${id}`)
 	return res.data
 }
 

@@ -1,4 +1,5 @@
-import { getFolderById } from '@/src/entities/folder/server/repo'
+import { deleteFolder, getFolderById, updateFolder } from '@/src/entities/folder/server/repo'
+import { getSession } from '@/src/shared/lib/getSession'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
@@ -15,4 +16,47 @@ export async function GET(
 	const folder = await getFolderById(id)
 
 	return NextResponse.json({ folder })
+}
+
+export async function PUT(
+	request: Request,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const payload = await request.json()
+	const { id: folderId } = await params
+
+	const folder = await getFolderById(folderId)
+	if (!folder) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+	const session = await getSession()
+	if (!session)
+		return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+	if (session.userId !== folder.ownerId)
+		return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+	const update = await updateFolder(payload, folderId)
+
+	return NextResponse.json({ update })
+}
+
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	const { id: folderId } = await params
+
+	const folder = await getFolderById(folderId)
+	if (!folder) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+
+	const session = await getSession()
+	if (!session)
+		return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+	if (session.userId !== folder.ownerId)
+		return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+	const res = await deleteFolder(folderId)
+
+	return NextResponse.json({ res })
 }

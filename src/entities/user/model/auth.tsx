@@ -1,6 +1,7 @@
 'use client'
 
 import api from '@/src/shared/api'
+import { getSession } from '@/src/shared/lib/getSession'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
 	AuthContextValue,
@@ -55,12 +56,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		await api.post('/api/auth/logout').finally(() => setUser(null))
 
 	const updateProfile = async (payload: UpdateProfilePayload) => {
+		const session = await getSession()
+
 		if (!user) throw new Error('Not authenticated.')
+		if (session?.userId !== user.id) throw new Error('Forbidden.')
 
-		const res = await api.put<{ user: User }>(`/api/users/${user.id}`, {
-			data: payload
-		})
+		const fd = new FormData()
 
+		const fields = {
+			name: payload.name,
+			username: payload.username,
+			email: payload.email,
+			password: payload.password,
+			avatar: payload.avatar
+		}
+
+		for (const [key, value] of Object.entries(fields)) {
+			if (value != null && value !== '') {
+				fd.append(key, value)
+			}
+		}
+		
+		if (Array.from(fd.entries()).length === 0) {
+			throw new Error('Send at least one field to update profile.')
+		}
+
+		const res = await api.put<{ user: User }>(`/api/users/${user.id}`, fd)
 		setUser(res.data.user)
 	}
 

@@ -1,6 +1,7 @@
 import { setAuthCookies } from '@/src/entities/user/server/auth-cookies'
 import { createUser } from '@/src/entities/user/server/repo'
 import { createSession } from '@/src/entities/user/server/session'
+import { extFromType } from '@/src/shared/lib/extFromType'
 import { prisma } from '@/src/shared/server/prisma'
 import { r2 } from '@/src/shared/server/r2'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
@@ -9,14 +10,6 @@ import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-function extFromType(type: string) {
-	if (type === 'image/png') return 'png'
-	if (type === 'image/jpeg') return 'jpg'
-	if (type === 'image/webp') return 'webp'
-	if (type === 'image/gif') return 'gif'
-	return 'bin'
-}
 
 export async function POST(request: Request) {
 	try {

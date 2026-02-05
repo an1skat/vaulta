@@ -15,16 +15,15 @@ export const getFolderById = async (id: string) => {
 	return prisma.folder.findUnique({ where: { id } })
 }
 
-export const getAllUserFolders = async (userId: string | null) => {
+export const getAllUserFolders = async (userId: string | undefined) => {
 	if (!userId) return []
 	return prisma.folder.findMany({
-		where: { ownerId: userId },
+		where: { ownerId: userId }, 
 		orderBy: { updatedAt: 'desc' },
 		select: {
 			id: true,
 			ownerId: true,
 			title: true,
-			titleLower: true,
 			details: true,
 			createdAt: true,
 			updatedAt: true,
@@ -37,8 +36,8 @@ export const getAllUserFolders = async (userId: string | null) => {
 }
 
 export const createFolder = async (payload: FolderPayload, ownerId: string) => {
-	const title = norm(payload.title || '')
-	const details = payload.details ? norm(payload.details) : ''
+	const title = payload.title || ''
+	const details = payload.details || ''
 	const isPublic = payload.isPublic
 	const titleLower = lower(title)
 
@@ -78,6 +77,7 @@ export const updateFolder = async (
 	const title = norm(payload.title || '')
 	const details = payload.details ? norm(payload.details) : ''
 	const isPublic = payload.isPublic
+	const titleLower = lower(title)
 
 	if (!title) throw new Error('Title is required')
 	if (!folderId) throw new Error('Folder is required')
@@ -94,7 +94,7 @@ export const updateFolder = async (
 		where: { id: folderId },
 		data: {
 			title,
-			titleLower: lower(title),
+			titleLower,
 			details,
 			...(typeof isPublic === 'boolean' ? { isPublic } : {})
 		}
@@ -142,52 +142,3 @@ export const findFolders = async (query: string | null, viewerId?: string) => {
 	})
 }
 
-export const findUserFolders = async (
-	query: string | null,
-	viewerId?: string
-) => {
-	const q = query ? lower(query) : ''
-	if (!q) return []
-
-	const raw = q.startsWith('%40')
-		? q.slice(3)
-		: q.startsWith('@')
-			? q.slice(1)
-			: q
-	const username = norm(raw)
-
-	if (!username) return []
-
-	const owner = await prisma.user.findUnique({
-		where: { username },
-		select: { id: true }
-	})
-
-	if (!owner) return []
-
-	const where =
-		viewerId && viewerId === owner.id
-			? { ownerId: owner.id }
-			: { ownerId: owner.id, isPublic: true }
-
-	return prisma.folder.findMany({
-		where,
-		orderBy: { updatedAt: 'desc' },
-		take: 50,
-		select: {
-			id: true,
-			ownerId: true,
-			title: true,
-			titleLower: true,
-			details: true,
-			createdAt: true,
-			updatedAt: true,
-			isPublic: true,
-			owner: {
-				select: {
-					username: true
-				}
-			}
-		}
-	})
-}

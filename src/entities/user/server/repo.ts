@@ -8,7 +8,7 @@ import {
 	isValidName,
 	isValidUsername
 } from '../lib/validation'
-import { LoginPayload, RegisterPayload, User } from '../model/types'
+import { LoginPayload, RegisterPayload } from '../model/types'
 
 const scryptAsync = promisify(scrypt)
 const hashPassword = async (password: string) => {
@@ -57,7 +57,7 @@ export const createUser = async (payload: RegisterPayload) => {
 		throw new Error('Name must be between 3 and 20 characters.')
 	}
 
-	if (!isValidUsername(username)) { 
+	if (!isValidUsername(username)) {
 		throw new Error('Username must be less than 20 characters.')
 	}
 
@@ -101,7 +101,7 @@ export const createUser = async (payload: RegisterPayload) => {
 	return created
 }
 
-export const loginUser = async (payload: LoginPayload): Promise<User> => {
+export const loginUser = async (payload: LoginPayload) => {
 	const login = payload.login?.trim().toLowerCase()
 	const payloadPassword = payload.password?.trim()
 
@@ -123,4 +123,48 @@ export const loginUser = async (payload: LoginPayload): Promise<User> => {
 	const { password, ...data } = user
 
 	return { ...data }
+}
+
+export const updateUser = async (payload: RegisterPayload, userId: string) => {
+	const name = payload.name
+	const username = payload.username?.trim().toLowerCase()
+	const email = payload.email?.trim().toLowerCase()
+	const password = payload.password?.trim()
+
+	if (!isValidName(name)) {
+		throw new Error('Name must be between 3 and 20 characters.')
+	}
+
+	if (!isValidUsername(username)) {
+		throw new Error('Username must be less than 20 characters.')
+	}
+
+	if (!isValidEmail(email)) {
+		throw new Error('Email address is invalid.')
+	}
+
+	if (!isStrongPassword(password)) {
+		throw new Error(
+			'Password must be at least 7 characters and include at least three of: uppercase, lowercase, number, and symbol.'
+		)
+	}
+	const hashedPassword = await hashPassword(password)
+
+	return prisma.user.update({
+		where: { id: userId },
+		data: {
+			name,
+			username,
+			email,
+			password: hashedPassword
+		}
+	})
+}
+
+export const deleteUser = async (userId: string) => {
+	if (!userId) throw new Error('User is required')
+
+	await prisma.user.delete({ where: { id: userId } })
+
+	return { message: 'Delete success' }
 }

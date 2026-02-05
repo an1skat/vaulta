@@ -1,4 +1,7 @@
-import { findFolders, findUserFolders } from '@/src/entities/folder/server/repo'
+import {
+	findFolders,
+	getAllUserFolders
+} from '@/src/entities/folder/server/repo'
 import { getSession } from '@/src/shared/lib/getSession'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -18,7 +21,7 @@ export async function GET(request: NextRequest) {
 	const isUserQuery = q.startsWith('@') || q.startsWith('%40')
 
 	const folders = isUserQuery
-		? await findUserFolders(q, viewerId)
+		? await getAllUserFolders(viewerId)
 		: await findFolders(q, viewerId)
 
 	return NextResponse.json({ folders })
