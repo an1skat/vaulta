@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
 import { getPasswordStrength } from '../lib/getPasswordStrength'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 export default function RegisterForm() {
 	const { register, login } = useAuth()
@@ -23,6 +24,7 @@ export default function RegisterForm() {
 		password: '',
 		email: ''
 	})
+	const [showPassword, setShowPassword] = useState(false)
 	const [avatarFile, setAvatarFile] = useState<File | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
@@ -254,14 +256,24 @@ export default function RegisterForm() {
 
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Password</span>
-								<input
-									type="password"
-									name="password"
-									id="password"
-									placeholder="Password"
-									onChange={handleChange}
-									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
-								/>
+								<div className="relative">
+									<input
+										type={showPassword ? 'text' : 'password'}
+										name="password"
+										id="password"
+										placeholder="Password"
+										onChange={handleChange}
+										className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 pr-12 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									/>
+									<button
+										type="button"
+										onClick={() => setShowPassword(prev => !prev)}
+										aria-label={showPassword ? 'Hide password' : 'Show password'}
+										className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted) transition hover:text-(--muted-strong) focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)]"
+									>
+										{showPassword ? <FiEyeOff /> : <FiEye />}
+									</button>
+								</div>
 								<div className="mt-2 grid gap-2">
 									<div className="h-2 w-full overflow-hidden rounded-full border border-white/15 bg-white/15">
 										<div

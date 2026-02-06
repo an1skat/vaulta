@@ -9,13 +9,16 @@ export default async function ProfilePage({
 	params: Promise<{ id: string }>
 }) {
 	const session = await getSession()
-	const viewerId = session?.userId || null
+	const viewerId = session?.userId
 
 	const folders = await getAllUserFolders(viewerId)
 
 	return (
 		<main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-			<ProfileSection params={params} />
+			<ProfileSection
+				params={params}
+				viewerId={viewerId}
+			/>
 			<FolderList
 				folders={folders}
 				profile

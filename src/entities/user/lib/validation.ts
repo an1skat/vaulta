@@ -1,6 +1,7 @@
 export const NAME_MIN_LENGTH = 3
 export const NAME_MAX_LENGTH = 20
 export const PASSWORD_MIN_LENGTH = 7
+export const DESCRIPTION_MAX_LENGTH = 160
 
 export const isValidName = (name: string) => {
 	const trimmed = name.trim()
@@ -14,6 +15,12 @@ export const isValidEmail = (email: string) => {
 	const trimmed = email.trim()
 	if (!trimmed) return false
 	return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
+}
+
+export const isValidDescription = (description: string) => {
+	const trimmed = description.trim()
+	if (!trimmed) return true
+	return trimmed.length <= DESCRIPTION_MAX_LENGTH
 }
 
 const countPasswordClasses = (password: string) => {

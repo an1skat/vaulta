@@ -10,9 +10,6 @@ import { NextResponse } from 'next/server'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const MAX_FILES = 8
-const MAX_FILE_SIZE = 10 * 1024 * 1024
-
 export async function POST(request: Request) {
 	try {
 		const session = await getSession()
@@ -43,9 +40,9 @@ export async function POST(request: Request) {
 		}
 
 		const rawImages = form.getAll('images')
-		if (rawImages.length > MAX_FILES) {
+		if (rawImages.length > 8) {
 			return NextResponse.json(
-				{ error: `Too many images. Max ${MAX_FILES}.` },
+				{ error: `Too many images. Max 8.` },
 				{ status: 400 }
 			)
 		}
@@ -59,17 +56,17 @@ export async function POST(request: Request) {
 					{ status: 400 }
 				)
 			}
-			if (file.size > MAX_FILE_SIZE) {
+			if (file.size > 10 * 1024 * 1024) {
 				return NextResponse.json(
 					{
-						error: `Image too large. Max ${(MAX_FILE_SIZE / (1024 * 1024)).toFixed(0)}MB.`
+						error: `Image too large. Max 10MB.`
 					},
 					{ status: 400 }
 				)
 			}
 		}
 
-		const item = await createItem({ title, details }, folderId)
+		const item = await createItem({ title, details }, folderId, session.userId)
 
 		const imagesKeys: string[] = []
 

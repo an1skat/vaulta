@@ -11,12 +11,12 @@ import {
 import { LoginPayload, RegisterPayload } from '../model/types'
 
 const scryptAsync = promisify(scrypt)
-const hashPassword = async (password: string) => {
+export const hashPassword = async (password: string) => {
 	const salt = randomBytes(16).toString('hex')
 	const derived = (await scryptAsync(password, salt, 64)) as Buffer
 	return `scrypt$${salt}$${derived.toString('hex')}`
 }
-const verifyPassword = async (password: string, stored: string) => {
+export const verifyPassword = async (password: string, stored: string) => {
 	const parts = stored.split('$')
 	if (parts.length !== 3) return false
 
@@ -38,6 +38,7 @@ export const getUserById = async (id: string) => {
 			name: true,
 			username: true,
 			email: true,
+			description: true,
 			avatarKey: true
 		}
 	})
@@ -94,6 +95,7 @@ export const createUser = async (payload: RegisterPayload) => {
 			name: true,
 			username: true,
 			email: true,
+			description: true,
 			avatarKey: true
 		}
 	})

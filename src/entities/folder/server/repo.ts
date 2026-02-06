@@ -18,7 +18,7 @@ export const getFolderById = async (id: string) => {
 export const getAllUserFolders = async (userId: string | undefined) => {
 	if (!userId) return []
 	return prisma.folder.findMany({
-		where: { ownerId: userId }, 
+		where: { ownerId: userId },
 		orderBy: { updatedAt: 'desc' },
 		select: {
 			id: true,
@@ -28,6 +28,8 @@ export const getAllUserFolders = async (userId: string | undefined) => {
 			createdAt: true,
 			updatedAt: true,
 			isPublic: true,
+			titleLower: true,
+			imageKey: true,
 			owner: {
 				select: { username: true }
 			}
@@ -133,6 +135,7 @@ export const findFolders = async (query: string | null, viewerId?: string) => {
 			createdAt: true,
 			updatedAt: true,
 			isPublic: true,
+			imageKey: true,
 			owner: {
 				select: {
 					username: true
@@ -141,4 +144,3 @@ export const findFolders = async (query: string | null, viewerId?: string) => {
 		}
 	})
 }
-

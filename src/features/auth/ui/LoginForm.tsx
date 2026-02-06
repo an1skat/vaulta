@@ -4,12 +4,14 @@ import { useAuth } from '@/src/entities/user/model/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ChangeEvent, FormEvent, useState } from 'react'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 export default function Login() {
 	const [form, setForm] = useState({
 		login: '',
 		password: ''
 	})
+	const [showPassword, setShowPassword] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -75,15 +77,25 @@ export default function Login() {
 							</label>
 							<label className="grid gap-2 text-sm font-semibold text-(--muted-strong)">
 								<span>Password</span>
-								<input
-									type="password"
-									name="password"
-									id="password"
-									placeholder="Password"
-									value={form.password}
-									onChange={handleChange}
-									className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
-								/>
+								<div className="relative">
+									<input
+										type={showPassword ? 'text' : 'password'}
+										name="password"
+										id="password"
+										placeholder="Password"
+										value={form.password}
+										onChange={handleChange}
+										className="w-full rounded-2xl border border-(--border) bg-(--input-bg) px-4 py-3 pr-12 text-base text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition duration-200 placeholder:text-(--muted) focus:border-(--accent) focus:shadow-[0_0_0_4px_var(--ring)] focus:outline-none"
+									/>
+									<button
+										type="button"
+										onClick={() => setShowPassword(prev => !prev)}
+										aria-label={showPassword ? 'Hide password' : 'Show password'}
+										className="absolute right-3 top-1/2 -translate-y-1/2 text-(--muted) transition hover:text-(--muted-strong) focus-visible:outline-none focus-visible:shadow-[0_0_0_4px_var(--ring)]"
+									>
+										{showPassword ? <FiEyeOff /> : <FiEye />}
+									</button>
+								</div>
 							</label>
 							{error && <p className="text-sm text-(--error)">{error}</p>}
 

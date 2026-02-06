@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 	try {
 		const form = await request.formData()
 
-		const name = String(form.get('name') ?? '').trim()
+		const name = String(form.get('name') ?? '')
 		const username = String(form.get('username') ?? '').trim()
 		const email = String(form.get('email') ?? '').trim()
 		const password = String(form.get('password') ?? '').trim()
@@ -74,6 +74,7 @@ export async function POST(request: Request) {
 				name: true,
 				username: true,
 				email: true,
+				description: true,
 				avatarKey: true
 			}
 		})

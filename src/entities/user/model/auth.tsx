@@ -1,9 +1,8 @@
 'use client'
 
 import api from '@/src/shared/api'
-import { getSession } from '@/src/shared/lib/getSession'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import {
+import type {
 	AuthContextValue,
 	LoginPayload,
 	RegisterPayload,
@@ -32,34 +31,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		restore()
 	}, [])
 
-	const register = async (payload: RegisterPayload) => {
+	const register = async (payload: RegisterPayload): Promise<void> => {
 		const fd = new FormData()
 		fd.append('name', payload.name)
 		fd.append('username', payload.username)
 		fd.append('email', payload.email)
 		fd.append('password', payload.password)
 
-		if (payload.avatar) {
-			fd.append('avatar', payload.avatar)
-		}
+		if (payload.avatar) fd.append('avatar', payload.avatar)
 
 		const res = await api.post<{ user: User }>('/api/auth/register', fd)
 		setUser(res.data.user)
 	}
 
-	const login = async (payload: LoginPayload) => {
+	const login = async (payload: LoginPayload): Promise<void> => {
 		const res = await api.post<{ user: User }>('/api/auth/login', payload)
 		setUser(res.data.user)
 	}
 
-	const logout = async () =>
-		await api.post('/api/auth/logout').finally(() => setUser(null))
+	const logout = async (): Promise<void> => {
+		try {
+			await api.post('/api/auth/logout')
+		} finally {
+			setUser(null)
+		}
+	}
 
-	const updateProfile = async (payload: UpdateProfilePayload) => {
-		const session = await getSession()
-
+	const updateProfile = async (
+		payload: UpdateProfilePayload
+	): Promise<void> => {
 		if (!user) throw new Error('Not authenticated.')
-		if (session?.userId !== user.id) throw new Error('Forbidden.')
 
 		const fd = new FormData()
 
@@ -67,17 +68,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			name: payload.name,
 			username: payload.username,
 			email: payload.email,
+			description: payload.description,
+			currentPassword: payload.currentPassword,
 			password: payload.password,
 			avatar: payload.avatar
 		}
 
 		for (const [key, value] of Object.entries(fields)) {
+			if (key === 'description') {
+				if (value !== undefined) {
+					fd.append(key, value == null ? '' : String(value))
+				}
+				continue
+			}
 			if (value != null && value !== '') {
 				fd.append(key, value)
 			}
 		}
-		
-		if (Array.from(fd.entries()).length === 0) {
+
+		if (!Array.from(fd).length) {
 			throw new Error('Send at least one field to update profile.')
 		}
 
@@ -85,14 +94,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		setUser(res.data.user)
 	}
 
-	const value = useMemo(
+	const deleteProfile = async (id: string): Promise<void> => {
+		try {
+			await api.delete(`/api/users/${id}`)
+		} finally {
+			setUser(null)
+		}
+	}
+
+	const value = useMemo<AuthContextValue>(
 		() => ({
 			user,
 			isReady,
 			register,
 			login,
 			logout,
-			updateProfile
+			updateProfile,
+			deleteProfile
 		}),
 		[user, isReady]
 	)
@@ -102,8 +120,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => {
 	const context = useContext(AuthContext)
-	if (!context) {
-		throw new Error('useAuth must be used within AuthProvider')
-	}
+	if (!context) throw new Error('useAuth must be used within AuthProvider')
 	return context
 }

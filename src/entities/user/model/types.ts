@@ -1,9 +1,12 @@
 export type User = {
 	id: string
+	name: string
 	username: string
 	email: string
+	description?: string | null
 	password?: string
 	avatar?: string
+	avatarKey?: string | null
 }
 
 export type LoginPayload = {
@@ -23,14 +26,17 @@ export type UpdateProfilePayload = {
 	name?: string
 	username?: string
 	email?: string
+	description?: string | null
 	avatar?: File | null
 	password?: string
+	currentPassword?: string
 }
 
 export type AuthContextValue = {
 	user: User | null
 	login: (payload: LoginPayload) => Promise<void>
 	register: (payload: RegisterPayload) => Promise<void>
-	logout: () => void
+	logout: () => Promise<void>
 	updateProfile: (payload: UpdateProfilePayload) => Promise<void>
+	deleteProfile: (id: string) => Promise<void>
 }

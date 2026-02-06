@@ -31,12 +31,17 @@ export const getAllFolderItems = async (folderId: string | undefined) => {
 	})
 }
 
-export const createItem = async (payload: ItemPayload, folderId: string) => {
+export const createItem = async (
+	payload: ItemPayload,
+	folderId: string,
+	ownerId: string
+) => {
 	const title = payload.title || ''
 	const details = payload.details || ''
 	const titleLower = lower(title)
 
 	if (!title) throw new Error('Title is required')
+	if (!ownerId) throw new Error('Owner is required')
 	if (!folderId) throw new Error('Folder is required')
 
 	if (!isValidTitle(title))
@@ -56,6 +61,7 @@ export const createItem = async (payload: ItemPayload, folderId: string) => {
 	return prisma.item.create({
 		data: {
 			folderId,
+			ownerId,
 			title,
 			titleLower,
 			details

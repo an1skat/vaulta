@@ -1,6 +1,5 @@
 import { prisma } from '@/src/shared/server/prisma'
 import { createHash, randomBytes } from 'crypto'
-import 'server-only'
 
 export const ACCESS_TOKEN_TTL_MS = 1000 * 60 * 15
 export const REFRESH_TOKEN_TTL_MS = 1000 * 60 * 60 * 24 * 30

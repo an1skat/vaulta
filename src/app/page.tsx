@@ -44,8 +44,8 @@ export default async function Home({ searchParams }: HomeProps) {
 			</header>
 			<FoldersSection query={query} />
 			<section className="relative overflow-hidden rounded-3xl border border-(--glass-border) bg-(--glass) p-6 shadow-(--shadow) backdrop-blur-[18px] backdrop-saturate-150 sm:p-8">
-				<div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.45),rgba(255,255,255,0.08)_45%,transparent_80%)] opacity-70" />
-				<div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 bg-[radial-gradient(320px_circle_at_85%_40%,var(--accent-soft),transparent_70%)] opacity-80" />
+				<div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(320px_circle_at_85%_40%,var(--accent-soft),transparent_70%)] opacity-70" />
+				<div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/2 opacity-80" />
 				<div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
 					<div className="max-w-xl">
 						<p className="text-xs font-semibold uppercase tracking-[0.35em] text-(--muted)">
